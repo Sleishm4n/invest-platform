@@ -1,0 +1,44 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: invest
+      POSTGRES_PASSWORD: invest
+      POSTGRES_DB: invest
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U invest"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ../backend
+    env_file:
+      - ../backend/.env
+    environment:
+      DATABASE_URL: postgresql+psycopg://invest:invest@postgres:5432/invest
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ../backend/app:/app/app # live reload of code during local dev
+
+  # frontend:
+  #   build:
+  #     context: ../frontend
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     - backend
+  # Added in M7 once the Next.js app exists — kept commented so `docker compose up`
+  # works cleanly during backend-only milestones.
+
+volumes:
+  postgres_data:

@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+htmlcov/
+.coverage
+
+# Env
+.env
+.env.local
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+
+# Data & models (never commit datasets or trained model artifacts)
+*.csv
+*.parquet
+data/raw/
+data/processed/
+models/artifacts/
+
+# OS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
