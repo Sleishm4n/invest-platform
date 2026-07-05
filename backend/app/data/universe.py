@@ -29,3 +29,7 @@ UNIVERSE: list[TickerSpec] = [
     TickerSpec("SHEL.L", "Shell", "Energy", "UK"),
     TickerSpec("DGE.L", "Diageo", "Consumer Staples", "UK"),
 ]
+
+BENCHMARKS: list[TickerSpec] = [
+    TickerSpec("SPY", "S&P 500 ETF", "Fund", "US"),
+]
