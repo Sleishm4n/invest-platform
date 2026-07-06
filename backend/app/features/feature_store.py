@@ -16,7 +16,7 @@ def compute_and_store_rsi(
 
     the resulting metrics cleanly into the FeatureValue store.
     """
-    # 1. Fetch historical close prices sorted by date
+    # Fetch historical close prices sorted by date
     stmt = (
         select(PriceBar.date, PriceBar.close)
         .where(PriceBar.ticker_id == ticker_id)
@@ -27,15 +27,15 @@ def compute_and_store_rsi(
     if not results:
         return
 
-    # 2. Build series indexed by date
+    # Build series indexed by date
     dates, closes = zip(*results)
     price_series = pd.Series(closes, index=pd.to_datetime(dates))
 
-    # 3. Compute RSI using the existing utility
+    # Compute RSI using the existing utility
     rsi_series = compute_rsi(price_series, period=period)
     feature_name = f"rsi_{period}"
 
-    # 4. Prepare batch upsert payload
+    # Prepare batch upsert payload
     # Convert numpy NaNs back to Python None values for proper SQL NULL inserts
     records = [
         {
@@ -73,7 +73,7 @@ def load_feature_matrix(
 
     the long database format out into a wide feature matrix layout.
     """
-    # 1. Query long format records within boundaries
+    # Query long format records within boundaries
     stmt = select(
         FeatureValue.ticker_id,
         FeatureValue.date,
@@ -94,12 +94,12 @@ def load_feature_matrix(
             ["ticker_id", "date"]
         )
 
-    # 2. Convert to Long Dataframe
+    # Convert to Long Dataframe
     df_long = pd.DataFrame(
         results, columns=["ticker_id", "date", "feature_name", "value"]
     )
 
-    # 3. Pivot to Wide format: rows are entities/times, columns are features
+    # Pivot to Wide format: rows are entities/times, columns are features
     # Explicitly cast column values back to standard floats to handle Numeric conversions cleanly
     df_long["value"] = df_long["value"].astype(float)
 
